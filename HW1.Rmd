@@ -49,7 +49,7 @@ sapply(Auto, class) %>% knitr::kable()
 ```
 
 `mpg`, `cylinders`, `displacement`, `horsepower`, `weight`, `acceleration`, and `year` are
-all quantitative variables. Note that `year` and `cylinders` are numerical varaibles that only take on certain discrete values, meaning one could classify them as categorical as well. `origin` gives the country in which the car came from, making it  a qualitative variable, even though it is coded numerically, with values 1, 2, and 3. If we are going to use it in a model, we should consider converting it into a factor. `Name` is a qualitative variable.
+all quantitative variables. Note that `year` and `cylinders` are numerical varaibles that only take on certain discrete values, meaning one is justified in classifying them as qualitative as well. `origin` gives the country in which the car came from, making it  a qualitative variable, even though it is coded numerically, with values 1, 2, and 3. If we are going to use it in a model, we should consider converting it into a factor. `Name` is a qualitative variable.
 
 
 ### 3. What is the range of each quantitative predictor? You can answer this using the `range()` function.   Create a table with variable name, min, max with one row per variable.   `kable` from the package `knitr` can display tables nicely.
@@ -90,7 +90,7 @@ m <- m +
 m
 ```
 
-Using the pairplot, we can investigate the relationship between multiple variables in the data set to determine whether or not they are appropriate to consider for linear regression. On the diagonals, we can see the densities for each variable in the dataset. It appears that many of distributions of our variables are right skewed, including mpg, dispalcement, horsepower, and weight. If we zoom in on the density plot for `mpg`, we can more easily see this right skewness.
+Using the pairplot, we can investigate the relationship between multiple variables in the data set to determine whether or not they are appropriate to consider for linear regression. On the diagonals, we can see the densities for each variable in the dataset. It appears that many of the distributions of our variables are right skewed, including mpg, dispalcement, horsepower, and weight. If we zoom in on the density plot for `mpg`, we can more easily see this right skewness.
 
 ```{r}
 ggplot(data = Auto, mapping = aes(x = `mpg`)) + geom_density(col = "red")
@@ -120,7 +120,7 @@ If we want to perform linear regression to predict mpg, we expect that mpg and t
 ggplot(data = Auto, mapping = aes(x = `displacement`, y = `mpg`)) + geom_point()
 ```
 
-While there is a clear relationship between the two variables, the relationship appears to be non-linear, so a simple regression may not be an appropriate model. There is a similar curved relationship between `mpg` and `horsepower`, as well as between `mpg` and `weight`. A polynomial regression may be more appropriate for modelling these relationships. Another thing we could do is perform a log transform, which to these 3 variables, making them appear more linear.
+While there is a clear relationship between the two variables, the relationship appears to be non-linear, so a simple regression may not be an appropriate model. There is a similar curved relationship between `mpg` and `horsepower`, as well as between `mpg` and `weight`. A polynomial regression may be more appropriate for modelling these relationships. Another thing we could do is perform a log transform to these 3 variables, making them have a more linear relationship with `mpg`.
 
 ```{r}
 ggplot(data = Auto, mapping = aes(x = log(`displacement`), y = `mpg`)) + geom_point()
@@ -165,7 +165,7 @@ reg <- lm(mpg~horsepower, data = Auto)
 summary(reg)
 ```
 
-There is a statisitcally signficant moderately strong ($R^2 = 0.6$) negative relationship between horsepower and miles per gallon, as the p-value associated with the slope is approximately 0. That is, as horsepower increases, a car's mpg value will decrease. A unit increase in the car's horsepower corresponds to a 0.16 unit decrease in the car's miles per gallon, while a car with "0 horsepower" would theoretically have a horsepower of 39.9. One thing to note may be that a plot of mpg vs. horsepower shows a curved relationship between the two variables, meaning a more flexible method, such as a higher order polynomial regression, may be more accurate than a simple linear regression model.
+There is a statisitcally signficant moderately strong ($R^2 = 0.6$) negative relationship between horsepower and miles per gallon, as the p-value associated with the slope is approximately 0. That is, as horsepower increases, a car's mpg value will decrease. A unit increase in the car's horsepower corresponds to a 0.16 unit decrease in the car's miles per gallon, while a car with "0 horsepower" would theoretically have a horsepower of 39.9. One thing to note may be that a plot of mpg vs. horsepower shows a curved relationship between the two variables, meaning a more flexible method, such as a higher order polynomial regression, may be more accurate than a simple linear regression model. We could also use a log transform on the predictor to solve this problem.
 
 ```{r}
 # Predicted mpg with horsepower 98
@@ -206,7 +206,7 @@ The relationship between horsepower and mpg does not seem to be perfectly linear
 plot(reg)
 ```
 
-The plot function allow us to check our modelling assumptions - if the diagnsotic plots do not show the patterns we would like to see, we may assume that the linear regression model was not appropriate for our data. The first diagnostic plot we would like to examine is the "Residuals vs. Fitted" plot, which checks teh assumption that there is a linear relationship between the predictor and the response. If we see a horizontal red line, and a random scatter of data points around 0, then this assumption is reasonably met.
+The plot function allow us to check our modelling assumptions - if the diagnostic plots do not show the patterns we would like to see, we may assume that the linear regression model was not appropriate for our data. The first diagnostic plot we would like to examine is the "Residuals vs. Fitted" plot, which checks the assumption that there is a linear relationship between the predictor and the response. If we see a horizontal red line, and a random scatter of data points around 0, then this assumption is reasonably met.
 In our data, we see a curved red line and a non random scatter of residuals, meaning the linear relationship assumption is not met. This was conjectured earlier, as there clearly was a curved relationship between the predictor and response. The next plot we see is the Normal QQ-plot, which checks to see if the residuals are normally distributed. The Normal QQ-plot should show the data points following the straight dashed line. For the most part, this is the case between theoretical quantiles -1 and 1, but we see some significant deviation in the tails, indicating that the residuals may not indeed be normally distributed. The scale location plot checks the assumption that the residuals terms have constant variance. Again, we want to see a horizontal red line with a random scatter of residuals. The scatter of the residuals terms seems to change slightly, so the residuals probably do not have perfectly constant variance, though this plot does not seem to be extremely worrying. Finally, the residuals vs. leverage plot shows us influential cases, such as outlier as leverage points, which may have a major impact on our regression line. We do see a few points with standardized residuals greater than 3 in absolute value, and 117 and 94 are marked as potential influential points. These points should be considered and investigated before being included in the model fitting process.
 
 ## Theory
