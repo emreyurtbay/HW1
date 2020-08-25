@@ -3,18 +3,19 @@ title: "STA521 HW1"
 author: "Emre Yurtbay // eay7"
 date: "Due August 28"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
+# add other libraries here
+
 knitr::opts_chunk$set(echo = TRUE)
 library(ISLR)
 library(dplyr)
 library(ggplot2)
 library(GGally)
-# add other libraries here
 ```
 
 This exercise involves the Auto data set from ISLR.  Load the data and answer the following questions adding your code in the code chunks. Please submit a pdf version to Sakai.  For full credit, you should push your final Rmd file to your github repo on the STA521-F19 organization site by the deadline  (the version that is submitted on Sakai will be graded)
@@ -48,15 +49,18 @@ sapply(Auto, class) %>% knitr::kable()
 ```
 
 `mpg`, `cylinders`, `displacement`, `horsepower`, `weight`, `acceleration`, and `year` are
-all quantitative variables. `origin` gives the country in which the car came from, 
-making it more of a qualitative variable, even though it is coded numerically, 
-with values 1, 2, and 3. If we are going to use it in a model, we should consider converting it into a factor. `Name` is a qualitative variable.
+all quantitative variables. Note that `year` and `cylinders` are numerical varaibles that only take on certain discrete values, meaning one could classify them as categorical as well. `origin` gives the country in which the car came from, making it  a qualitative variable, even though it is coded numerically, with values 1, 2, and 3. If we are going to use it in a model, we should consider converting it into a factor. `Name` is a qualitative variable.
 
 
 ### 3. What is the range of each quantitative predictor? You can answer this using the `range()` function.   Create a table with variable name, min, max with one row per variable.   `kable` from the package `knitr` can display tables nicely.
 
 ```{r}
-range_summary <- sapply(Auto %>% select(`mpg`, `cylinders`, `displacement`, `horsepower`, `weight`, `acceleration`, `year`), range) %>% t()
+range_summary <- sapply(Auto %>% 
+                          select(
+                            `mpg`, `cylinders`,
+                            `displacement`, `horsepower`, 
+                            `weight`, `acceleration`), range) %>%
+  t()
 colnames(range_summary) <- c("Min", "Max")
 range_summary %>% knitr::kable()
 ```
@@ -65,7 +69,10 @@ range_summary %>% knitr::kable()
 
 ```{r}
 mean_sd_function <- function(x){c(mean(x), sd(x))}
-sum_stats <- sapply(Auto %>% select(`mpg`, `cylinders`, `displacement`, `horsepower`, `weight`, `acceleration`, `year`), mean_sd_function) %>% t()
+sum_stats <- sapply(Auto %>% select(`mpg`, 
+                                    `cylinders`, `displacement`, 
+                                    `horsepower`, `weight`, `acceleration`),
+                    mean_sd_function) %>% t()
 colnames(sum_stats) <- c("Mean", "Standard Deviation")
 sum_stats %>% knitr::kable()
 ```
@@ -75,9 +82,11 @@ sum_stats %>% knitr::kable()
 ```{r}
 Auto_Quantitative <- Auto %>% select(-c(`name`))
 m <- GGally::ggpairs(Auto_Quantitative)
-m <- m + labs(subtitle ="Matrix of Scatterplots for the Auto Data",
+m <- m + 
+  labs(subtitle ="Matrix of Scatterplots for the Auto Data",
               caption = "Caption: Use this to check for linear relationships among data")
-m <- m + theme(plot.subtitle=element_text(size=12, hjust=0.5, face="italic", color="black"))
+m <- m + 
+  theme(plot.subtitle=element_text(size=12, hjust=0.5, face="italic", color="black"))
 m
 ```
 
@@ -99,7 +108,7 @@ ggplot(data = Auto, mapping = aes(x = `horsepower`, y = `weight`)) + geom_point(
 Mpg has a negative non-linear relationship with displacement, horsepower, and weight. Cars with more cylinders also seem to have lower mpg, while European and Japanese cars tend to have higher mpg values than American cars. Note that (1) stands for American, (2) stands for European, and (3) stands for Japanese.
 
 ```{r}
-ggplot(data = Auto, mapping = aes(x = `origin`, y = `mpg`)) + geom_point()
+ggplot(data = Auto, mapping = aes(x = as.factor(`origin`), y = `mpg`)) + geom_boxplot()
 ```
 
 
@@ -111,10 +120,17 @@ If we want to perform linear regression to predict mpg, we expect that mpg and t
 ggplot(data = Auto, mapping = aes(x = `displacement`, y = `mpg`)) + geom_point()
 ```
 
-While there is a clear relationship between the two variables, the relationship appears to be non-linear, so a simple regression may not be an appropriate model. There is a similar curved relationship between `mpg` and `horsepower`, as well as between `mpg` and `weight`. A polynomial regression may be more appropriate for modelling these relationships.
+While there is a clear relationship between the two variables, the relationship appears to be non-linear, so a simple regression may not be an appropriate model. There is a similar curved relationship between `mpg` and `horsepower`, as well as between `mpg` and `weight`. A polynomial regression may be more appropriate for modelling these relationships. Another thing we could do is perform a log transform, which to these 3 variables, making them appear more linear.
 
 ```{r}
-ggplot(data = Auto, mapping = aes(x = `acceleration`, y = `mpg`)) + geom_point()
+ggplot(data = Auto, mapping = aes(x = log(`displacement`), y = `mpg`)) + geom_point()
+```
+
+As we can see, the log transform of the displacement variable seems to have made the relationship seem more linear, and now linear regression may be appropriate.
+
+```{r}
+ggplot(data = Auto, mapping = aes(x = `acceleration`, y = `mpg`)) + 
+  geom_point()
 ```
 
 `mpg` and `accerleration` may have a fairly weak linear relationship, so we may be able to use `acceleration` to model `mpg`, but the model may not be entirely useful.
@@ -149,15 +165,13 @@ reg <- lm(mpg~horsepower, data = Auto)
 summary(reg)
 ```
 
-There is a statisitcally signficant moderately strong negative relationship between horsepower and miles per gallon, as the p-value associated with the slope is approximately 0. That is, as horsepower increases, a car's mpg value will decrease. A unit increase in the car's horsepower corresponds to a 0.16 unit decrease in the car's miles per gallon, while a car with "0 horsepower" would theoretically have a horsepower of 39.9. One thing to note may be that a plot of mpg vs. horsepower shows a curved relationship between the two variables, meaning a more flexible method, such as a higher order polynomial regression, may be more accurate than a simple linear regression model.
+There is a statisitcally signficant moderately strong ($R^2 = 0.6$) negative relationship between horsepower and miles per gallon, as the p-value associated with the slope is approximately 0. That is, as horsepower increases, a car's mpg value will decrease. A unit increase in the car's horsepower corresponds to a 0.16 unit decrease in the car's miles per gallon, while a car with "0 horsepower" would theoretically have a horsepower of 39.9. One thing to note may be that a plot of mpg vs. horsepower shows a curved relationship between the two variables, meaning a more flexible method, such as a higher order polynomial regression, may be more accurate than a simple linear regression model.
 
 ```{r}
 # Predicted mpg with horsepower 98
 new = data.frame(horsepower=98)
 predict(reg, newdata = new)
 ```
-
-A car with the horsepower of 98 will have a predicted mpg of 24.467.
 
 ```{r}
 # Prediction Interval
@@ -171,9 +185,11 @@ new = data.frame(horsepower=98)
 predict(reg, newdata = new, interval = "confidence", level = 0.95)
 ```
 
+A car with the horsepower of 98 will have a predicted mpg of 24.467.
+
 The confidence interval is (23.97308 24.96108) This means that reasonable values for the expectation of $y|x$ lie in the range (23.97308 24.96108), with 95% certainty. The prediction interval is (14.8094, 34.12476), which means  reasonable values for the predicted value y at point x lie in the range (14.8094, 34.12476), with 95% certainty.
 
-The interpretation for the confidence interval is slightly different from the interpretation of the prediction interval. The confidence interval gives a range of values for the  *expected value* of the predicted response of y given a data point x, that is, of $E[y|x]$. In simple terms, it is a confidence range for the regression line itself. As we can see, the confidence interval is quite tight compared to the prediction interval. To understand this, recall that our regression model is $y_i = f(x_i) + \epsilon_i$, where $\epsilon_i$ is error we cannot account for. The prediction interval also takes into account the extra variability of this error term, $\epsilon_i$. This variance is not taken into account by the confidence interval. Therefore, the prediction interval is necessarily wider than the confidence interval, but they are centered around the same value $x\beta$.
+The interpretation for the confidence interval is slightly different from the interpretation of the prediction interval. The confidence interval gives a range of values for the  *expected value* of the predicted response of y given a data point x, that is, of $E[y|x]$. In simple terms, it is a confidence range for the regression line itself, and the average mpg of cars with 98 horsepower would fall between (23.97308 24.96108), with 95% certainty. As we can see, the confidence interval is quite tight compared to the prediction interval. To understand this, recall that our regression model is $y_i = f(x_i) + \epsilon_i$, where $\epsilon_i$ is error we cannot account for. The prediction interval also takes into account the extra variability of this error term, $\epsilon_i$. This variance is not taken into account by the confidence interval. Therefore, the prediction interval is necessarily wider than the confidence interval, but they are centered around the same value $x\beta$.
 
 ### 8. Plot the response and the predictor using `ggplot`. Add to the plot a line showing the least squares regression line. 
 ```{r}
@@ -210,7 +226,7 @@ $$E_{Y\mid X}[(Y - g(x))^2 \mid X =x] = \int_{-\infty}^{\infty}y^2f_{Y\mid X}(y\
 We can simplify this into a more friendly looking form
 
 $$E_{Y\mid X}[(Y - g(x))^2 \mid X =x] =E_{Y\mid X}[Y^2 \mid X =x] + 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2$$
-Now, we are in the position to take the derivative and to find the minimum value for $g(x)$
+Now, we are in the position to take the derivative with respect to g(x), as x is fixed, and to find the minimum value for $g(x)$
 
 $$\frac{\partial}{\partial g(x)}[E_{Y\mid X}[Y^2 \mid X =x] + 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2] = -2E_{Y\mid X}[Y \mid X =x] + 2g(x) = 0$$
 Solving for $g(x)$, we get 
@@ -266,7 +282,7 @@ This leads to
 
 $$E[f(x_0)f(x_o)] + E[\epsilon f(x_0)] - E[(f(x_0)+\epsilon)\hat{f}(x_o)]- f(x_0)^2 +f(x_0)E[\hat{f}(x_o)]$$
 
-Another important fact is that $\epsilon$ is independent of $f(x_0)$, so we can write $ E[\epsilon f(x_0)]$ as $ E[\epsilon]E[f(x_0)]$. Since $E[\epsilon] = 0$, that whole term goes away. Also, since $E[f(x_0)f(x_o)] = f(x_0)^2$ We are left with
+Another important fact is that $\epsilon$ is independent of $f(x_0)$, so we can write $E[\epsilon f(x_0)]$ as $E[\epsilon]E[f(x_0)]$. Since $E[\epsilon] = 0$, that whole term goes away. Also, since $E[f(x_0)f(x_o)] = f(x_0)^2$ We are left with
 
 $$-f(x_0) E[\hat{f}(x_o)] - E[\epsilon \hat{f}(x_0)] + f(x_0)E[\hat{f}(x_o)] $$
 
@@ -305,7 +321,7 @@ $$Var(\hat{f}(x_0)) + (Bias(\hat{f}(x_0)))^2 + Var(\epsilon)$$
 
 #### (d) Explain why even if $N$ goes to infinity the above can never go to zero. e.g. even if we can learn $f(x)$ perfectly that the error in prediction will not vanish.   
 
-In general, the way to simeltaneously decrease variance and bias simeltaneously is to increase the sample size $N$. However, no matter how much we increase the sample size, we can never decrease the irreducible error associated with $\epsilon$, meaning the lower bound on the error will be $\sigma^2$.
+In general, a good way way to simeltaneously decrease variance and bias simeltaneously is to increase the sample size $N$. We can often learn the function better this way and also decrease the uncertainty of our estimates with more data. However, no matter how much we increase the sample size, we can never decrease the irreducible error associated with $\epsilon$, meaning the lower bound on the error will be $\sigma^2$.
 
 #### (e) Decompose the unconditional mean squared error $E_{Y, X}(f(x_o) - \hat{f}(x_o))^2$ into a squared bias and a variance component. (See ELS 2.7(c))
   
@@ -342,4 +358,11 @@ $$E_{Y, X}[(f(x_0)- \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] +
 
 #### (f) Establish a relationship between the squared biases and variance in the above Mean squared errors.
 
-Mean squared error is a typical way we assess model accuracy, but the key idea is that Mean squared error can be decomposed into squared bias and variance terms. Ideally, we would prefer a model that captures the realtionships seen in the training data while at the same time generalizing to test data. Therefore, we want a model that simeltaneously has low variance (stable predictions) and low bias (minimal error). However, there often exists a tradeoff between bias and variance - methods that decrease the bias of predictors often increase the variance, or vice versa. To counter this,  we can attempt to decrease both the bias and variance by increasing the size of the training set and by choosing a more apropriate model with more suitable assumptions. 
+Mean squared error is a typical way we assess model accuracy, but the key idea is that Mean squared error can be decomposed into squared bias and variance terms. Ideally, we would prefer a model that captures the realtionships seen in the training data while at the same time generalizing to test data. Therefore, we want a model that simeltaneously has low variance (stable predictions) and low bias (minimal error). However, there often exists a tradeoff between bias and variance - methods that decrease the bias of predictors often increase the variance, or vice versa. To counter this,  we can attempt to decrease both the bias and variance by increasing the size of the training set and by choosing a more apropriate model with more suitable assumptions. The two mean squared error derivations we have done, while not the same, are related. For instance, the first decomposition is 
+
+$$E_{Y \mid X}[(Y - \hat{f}(x_o))^2] =  Var(\hat{f}(x_0)) + (Bias(\hat{f}(x_0)))^2 + Var(\epsilon)$$
+Secondly, from the second derivation, we can establish that 
+
+$$E_{Y, X}(f(x_o) - \hat{f}(x_o))^2 = E[E_{Y \mid X}[(Y - \hat{f}(x_o))^2]]$$
+
+So the second decompostiion is the expected value of the first, but with an extra varaince term, $Var(\epsilon)$ which comes from trying to find the MSE of the predictor $Y$ rather than just the estimator $\hat{f}$.
