@@ -43,11 +43,6 @@ count_vars_with_NA
 
 None of the variables have missing data.
 
-```{r}
-help(Auto)
-```
-
-We are told from the help file that the original dataset had some missing values, but the one we are using right now does not.
 
 ### 2.  Which of the predictors are quantitative, and which are qualitative?
 ```{r}
@@ -364,11 +359,35 @@ $$E_{Y, X}[(f(x_0)- \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] +
 
 #### (f) Establish a relationship between the squared biases and variance in the above Mean squared errors.
 
-Mean squared error is a typical way we assess model accuracy, but the key idea is that Mean squared error can be decomposed into squared bias and variance terms. Ideally, we would prefer a model that captures the realtionships seen in the training data while at the same time generalizing to test data. Therefore, we want a model that simeltaneously has low variance (stable predictions) and low bias (minimal error). However, there often exists a tradeoff between bias and variance - methods that decrease the bias of predictors often increase the variance, or vice versa. To counter this,  we can attempt to decrease both the bias and variance by increasing the size of the training set and by choosing a more apropriate model with more suitable assumptions. The two mean squared error derivations we have done, while not the same, are related. For instance, the first decomposition is 
 
-$$E_{Y \mid X}[(Y - \hat{f}(x_o))^2] =  Var(\hat{f}(x_0)) + (Bias(\hat{f}(x_0)))^2 + Var(\epsilon)$$
-Secondly, from the second derivation, we can establish that 
+The main idea here is we want to to compare the unconditional squared bias with the conditional squared bias and also compare the unconditional and conditional variances. The hint tells us we want to take the expectation with respect to X. 
 
-$$E_{Y, X}(f(x_o) - \hat{f}(x_o))^2 = E[E_{Y \mid X}[(Y - \hat{f}(x_o))^2]]$$
+We start with the derivation in part c - 
 
-So the second decompostiion is the expected value of the first, but with an extra varaince term, $Var(\epsilon)$ which comes from trying to find the MSE of the predictor $Y$ rather than just the estimator $\hat{f}$.
+$$E_{Y\mid X}[(y - \hat{f}(x_0))]$$
+This can be written as 
+
+$$E_{Y\mid X}[(y - \hat{f}(x_0))] = V[\epsilon] + E_{Y\mid X}[(f(x_0) - \hat{f}(x_0))^2]$$
+
+Let's use the hint and take the expectation with respect to X of both sides.
+
+$$E_X[E_{Y\mid X}[(y - \hat{f}(x_0))^2]] = E_X[V[\epsilon]] + E_X[E_{Y\mid X}[(f(x_0) - \hat{f}(x_0))^2]]$$
+
+Lets look at the last term in the above equation
+
+$$E_X[E_{Y\mid X}[(f(x_0) - \hat{f}(x_0))^2]] = E_{Y,X}[(f(x_0) - \hat{f}(x_0))^2]$$
+
+Therefore, we have 
+
+$$E_X[E_{Y\mid X}[(y - \hat{f}(x_0))^2]] = E_{Y,X}[(f(x_0) - \hat{f}(x_0))^2] + V(\epsilon)$$
+
+Now we can substitute our decompositions from part c and e
+
+$$E_X[E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + \sigma^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + V(\epsilon)$$
+
+Simplifying, we get 
+
+$$E_X[V_{Y|X}(\hat{f}(x_0))] + E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] = V_{X,}[\hat{f}(x_0)] + (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$$
+
+One thing we know automatically is $V_X[\hat{f}(x_0)] > E_X[V_{Y|X}(\hat{f}(x_0))]$. This is clear because there is variability due to $X$ and $Y$  in $V_X[\hat{f}(x_0)]$,while $X$ is fixed in $ E_X[V_{Y|X}(\hat{f}(x_0))]$. Because of this facr, we can also conclude from the equation above that $E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] > (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$.
+
