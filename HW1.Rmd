@@ -43,6 +43,12 @@ count_vars_with_NA
 
 None of the variables have missing data.
 
+```{r}
+help(Auto)
+```
+
+We are told from the help file that the original dataset had some missing values, but the one we are using right now does not.
+
 ### 2.  Which of the predictors are quantitative, and which are qualitative?
 ```{r}
 sapply(Auto, class) %>% knitr::kable()
