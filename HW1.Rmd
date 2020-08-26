@@ -319,7 +319,7 @@ $$E[(\hat{f}(x_o) -f(x_0))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\ha
 
 Putting everything together now, we have 
 
-$$E_{Y \mid X}[(Y - \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] + f(x_o))^2 + \sigma^2$$
+$$E_{Y \mid X}[(Y - \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + \sigma^2$$
 
 Therefore, the conditional mean squared error can be decomposed into 
 
@@ -359,7 +359,7 @@ $$2E[(\hat{f}(x_o)) - E[\hat{f}(x_o)])(E[\hat{f}(x_o)] - f(x_o))] = 0$$
 
 Therefore, 
 
-$$E_{Y, X}[(f(x_0)- \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] + f(x_o))^2 = Var(\hat{f}(x_o)) + (Bias(\hat{f}(x_o)))^2$$
+$$E_{Y, X}[(f(x_0)- \hat{f}(x_o))^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 = Var(\hat{f}(x_o)) + (Bias(\hat{f}(x_o)))^2$$
 
 
 #### (f) Establish a relationship between the squared biases and variance in the above Mean squared errors.
