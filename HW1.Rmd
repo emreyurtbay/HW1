@@ -226,17 +226,17 @@ $$E_{Y\mid X}[(Y - g(x))^2 \mid X =x] = \int_{-\infty}^{\infty}y^2f_{Y\mid X}(y\
 
 We can simplify this into a more friendly looking form
 
-$$E_{Y\mid X}[(Y - g(x))^2 \mid X =x] =E_{Y\mid X}[Y^2 \mid X =x] + 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2$$
+$$E_{Y\mid X}[(Y - g(x))^2 \mid X =x] =E_{Y\mid X}[Y^2 \mid X =x] - 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2$$
 Now, we are in the position to take the derivative with respect to g(x), as x is fixed, and to find the minimum value for $g(x)$
 
-$$\frac{\partial}{\partial g(x)}[E_{Y\mid X}[Y^2 \mid X =x] + 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2] = -2E_{Y\mid X}[Y \mid X =x] + 2g(x) = 0$$
+$$\frac{\partial}{\partial g(x)}[E_{Y\mid X}[Y^2 \mid X =x] - 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2] = -2E_{Y\mid X}[Y \mid X =x] + 2g(x) = 0$$
 Solving for $g(x)$, we get 
 
 $$g(x) = E[Y \mid X =x]$$
 
 We know this is a minimum because 
 
-$$\frac{\partial^2}{\partial g(x)^2}[E_{Y\mid X}[Y^2 \mid X =x] + 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2] = 2 > 0$$
+$$\frac{\partial^2}{\partial g(x)^2}[E_{Y\mid X}[Y^2 \mid X =x] - 2g(x)E_{Y\mid X}[Y \mid X =x] + g(x)^2] = 2 > 0$$
 Therefore, $E[Y \mid X =x]$ minimizes $E[(Y - g(x))^2 \mid X =x]$ over all functions $g(x)$ at all points $X=x$
 
 ### 11. (adopted from ELS Ex 2.7 ) Suppose that we have a sample of $N$ pairs $x_i, y_i$ drwan iid from the distribution characterized as follows 
