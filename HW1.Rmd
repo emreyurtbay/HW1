@@ -387,7 +387,7 @@ $$E_X[E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + \
 
 Simplifying, we get 
 
-$$E_X[V_{Y|X}(\hat{f}(x_0))] + E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] = V_{X,}[\hat{f}(x_0)] + (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$$
+$$E_X[V_{Y|X}(\hat{f}(x_0))] + E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] = V_{X,Y}[\hat{f}(x_0)] + (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$$
 
 One thing we know automatically is $V_X[\hat{f}(x_0)] > E_X[V_{Y|X}(\hat{f}(x_0))]$. This is clear because there is variability due to $X$ and $Y$  in $V_X[\hat{f}(x_0)]$,while $X$ is fixed in $E_X[V_{Y|X}(\hat{f}(x_0))]$. Because of this facr, we can also conclude from the equation above that $E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] > (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$.
 
