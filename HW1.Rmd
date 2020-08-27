@@ -373,15 +373,15 @@ Let's use the hint and take the expectation with respect to X of both sides.
 
 $$E_X[E_{Y\mid X}[(y - \hat{f}(x_0))^2]] = E_X[V[\epsilon]] + E_X[E_{Y\mid X}[(f(x_0) - \hat{f}(x_0))^2]]$$
 
-Lets look at the last term in the above equation
+Let's look at the last term in the above equation
 
 $$E_X[E_{Y\mid X}[(f(x_0) - \hat{f}(x_0))^2]] = E_{Y,X}[(f(x_0) - \hat{f}(x_0))^2]$$
 
-Therefore, we have 
+This implies, we have 
 
 $$E_X[E_{Y\mid X}[(y - \hat{f}(x_0))^2]] = E_{Y,X}[(f(x_0) - \hat{f}(x_0))^2] + V(\epsilon)$$
 
-Now we can substitute our decompositions from part c and e
+Now we can substitute our decompositions from part c and e into the equation above.
 
 $$E_X[E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + \sigma^2] = E[(\hat{f}(x_0) - E[\hat{f}(x_o)]) ^ 2] + (E[\hat{f}(x_o)] - f(x_o))^2 + V(\epsilon)$$
 
@@ -389,5 +389,5 @@ Simplifying, we get
 
 $$E_X[V_{Y|X}(\hat{f}(x_0))] + E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] = V_{X,Y}[\hat{f}(x_0)] + (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$$
 
-One thing we know automatically is $V_X[\hat{f}(x_0)] > E_X[V_{Y|X}(\hat{f}(x_0))]$. This is clear because there is variability due to $X$ and $Y$  in $V_X[\hat{f}(x_0)]$,while $X$ is fixed in $E_X[V_{Y|X}(\hat{f}(x_0))]$. Because of this facr, we can also conclude from the equation above that $E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] > (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$.
+One thing we know automatically is $V_X[\hat{f}(x_0)] > E_X[V_{Y|X}(\hat{f}(x_0))]$. This is clear because there is variability due to $X$ and $Y$  in $V_X[\hat{f}(x_0)]$,while $X$ is fixed in $E_X[V_{Y|X}(\hat{f}(x_0))]$. Because of this fact, we can also conclude from the equation above that $E_X[(E_{X|Y}[\hat{f}(x_0))] - f(x_0))^2] > (E_{X,Y}[\hat{f}(x_0)] - f(x_0))^2$.
 
